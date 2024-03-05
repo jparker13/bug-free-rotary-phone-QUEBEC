@@ -1,0 +1,26 @@
+<%- include('partials/html-start.ejs') %>
+
+<h1>Welcome to Janna's Batons App</h1>
+
+<p>
+    <%= batonData.length %>
+</p>
+
+//todo: display the contents of the batonData...not just the length. 
+
+<h3> add a new baton </h3>
+
+<form method="POST" action="/addBaton">
+    <label for="batonType">Baton Type</label>
+    <input name="batonType" placeholder="new baton type">
+    <input type="submit" value="add a new baton" />
+</form>
+
+
+
+
+
+
+                
+
+<%- include('partials/html-end.ejs') %>
