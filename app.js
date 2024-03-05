@@ -80,27 +80,18 @@ app.post('/addBaton', async (req, res) => {
 
 }) 
 
-app.post('/updateDrink/:id', async (req, res) => {
+app.get('/updateBaton/:id', async (req, res) => {
+    const baton = await Collection.findOne({ _id: new ObjectId(req.params.id) });
+    res.render('edit', { baton });
+});
 
-  try {
-    console.log("req.parms.id: ", req.params.id) 
-    
-    client.connect; 
-    const collection = client.db("chillAppz").collection("drinkz");
-    let result = await collection.findOneAndUpdate( 
-      {"_id": ObjectId(req.params.id)}, { $set: {"size": "REALLY BIG DRINK" } }
-    )
-    .then(result => {
-      console.log(result); 
-      res.redirect('/');
-    })
-    .catch(error => console.error(error))
-  }
-  finally{
-    //client.close()
-  }
-
-}) 
+app.post('/updateBaton/:id', async (req, res) => {
+    await Collection.updateOne(
+        { _id: new ObjectId(req.params.id) },
+        { $set: { Type: req.body.Type, Wrap: req.body.Wrap, Color: req.body.Color, length: parseInt(req.body.length) } }
+    );
+    res.redirect('/');
+});
 
  app.post('/deleteDrink/:id', async (req, res) => {
 
