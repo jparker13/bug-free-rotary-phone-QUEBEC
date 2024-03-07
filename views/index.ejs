@@ -1,26 +1,126 @@
-<%- include('partials/html-start.ejs') %>
 
-<h1>Welcome to Janna's Batons App</h1>
+<%- include('partials/html-head.ejs') %>
+<link rel="stylesheet" href="/styles/styles.css">
 
-<p>
-    <%= batonData.length %>
-</p>
+<nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+    <div class="container-fluid">
+       <a class="navbar-brand"><%= pageTitle %></a>
+         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar">
+         <span class="navbar-toggler-icon"></span>
+         </button>
+     <div class="collapse navbar-collapse" id="collapsibleNavbar">
+       <ul class="navbar-nav">
+         <li>
+            <a class="nav-link" target="_blank" href="https://gist.github.com/barrycumbie/978e0a8f517669733f61d44008e6924c">Quebec Story Card</a>
+         </li>
+         <li class="nav-item">
+            <a class="nav-link" target="_blank" href="https://github.com/jparker13/bug-free-rotary-phone-QUEBEC">Source Code</a>
+         </li>
+         <li>
+            <a class="nav-link" target="_blank" href="">About Me</a>
+         </li>
+       </ul>
+     </div>
+     </div>
+   </nav>
 
-//todo: display the contents of the batonData...not just the length. 
+   <div class="row">
+    
+    <div id="titleBar" class="offset-md-3 col-md-8 mx-auto text-center">
 
-<h3> add a new baton </h3>
-
-<form method="POST" action="/addBaton">
-    <label for="batonType">Baton Type</label>
-    <input name="batonType" placeholder="new baton type">
-    <input type="submit" value="add a new baton" />
-</form>
-
+        <h1>JB's Batons</h1>
+        <h2>What kind of baton do you want?</h2>
+    </div>
+</div>
 
 
+<!-- first card  -->
+
+<div class="row justify-content-center">
+    <div class="card col-md-6 mx-auto">
+        <h3>Batons</h3>
+        <form method="POST" action="/addBaton">
+            <label for="batonType">Baton Type: </lable>
+            <br>
+            <input name="batonType" placeholder="rosebud / flat">
+            <br>
+            <label for="batonLength">Baton Length: </label>
+            <br>
+            <textarea name="batonLength" placeholder="rosebud / flat" rows="4" cols="50"></textarea>
+            <br>
+            <label for="batonWrap">Baton Wrap: </label>
+            <br>
+            <input name="batonWrapr" placeholder="willson / gamma">
+            <br>
+            <label for="batonColor">Baton Color: </label>
+            <br>
+            <input id="batonColor" name="rating" placeholder="black / white" >
+            <br>
+            <button class="btn btn-primary" type="submit">submit</button>
+        </form>
+    </div>
+</div>
 
 
 
-                
+
+
+<% for (var i=0; i< batonData.length; i++ ) { %>
+    <hr>
+    
+    <div class="row justify-content-center">
+        <div class="card col-md-4 ml-auto ">
+            <h3>Perfect Match!</h3>
+            <p>Baton Type: <%= batonData[i].batonType %></p>
+
+            <p>Baton Length: <%= batonData[i].batonLength %></p>
+
+            <p>Baton Wrap: <%= batonData[i].batonWrap %></p>
+
+            <p>Baton Color: <%= batonData[i].batonColor %></p>
+
+        </div>
+
+    <br>
+    
+        <div class="card col-md-4">
+            <h3>Update your purchase</h3>
+
+                <%= console.log(batonData) %>
+
+                    <form method="POST">
+                        <input type="hidden" id="id" name="id" value="<%= batonData[i]._id %>"></input>
+                        <label for="batonType"> Baton Type:</label>
+                        <input type="text" id="batonType" name="batonType" value="<%= batonData[i].batonType %>"></input>
+                        <br><br>
+                        <label for="batonLength">Baton Length: </label>
+                        <textarea type="text" id="batonLength" name="batonLength" value="<%= batonData[i].batonLength %>">rows="5" cols="30"></textarea>
+                        <br><br>
+                        <label for="batonWrap">Baton Wrap: </label>
+                        <input type="text" id="batonWrap" name="batonWrap" value="<%= batonData[i].batonWrap %>" >
+                        <br><br>
+                        <button class="btn btn-success" type="submit" formaction="/updateBaton">Update Baton</button>
+                        <button class="btn btn-warning" type="submit" formaction="/deleteBaton">Delete Baton</button>
+                    </form>
+                    <br>
+        </div>
+
+    </div>
+    <% } %>
+    <br>
+
+    
+
+
+
+
+
+
+<footer> 
+    <a href="/send">send</a> |
+
+    <a href="https://github.com/jparker13/bug-free-rotary-phone-QUEBEC" target="_blank">Source Code</a>
+
+</footer>
 
 <%- include('partials/html-end.ejs') %>

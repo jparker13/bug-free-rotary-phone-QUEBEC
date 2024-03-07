@@ -4,12 +4,15 @@ const app = express()
 const port = process.env.PORT || 5500;
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const bodyParser = require('body-parser')
+const { ObjectId } = require('mongodb')
+
+
 // set the view engine to ejs
 let path = require('path');
-
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 app.use(bodyParser.urlencoded({ extended: true }))
+app.use(express.static(__dirname + '/public'));
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(process.env.MONGO_URI, {
@@ -20,7 +23,7 @@ const client = new MongoClient(process.env.MONGO_URI, {
   }
 });
 
-async function getBatonData() {
+async function connectBatonData() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
@@ -42,13 +45,13 @@ async function getBatonData() {
 //reading from mongo
 app.get('/', async (req, res) => {
     
-let result = await getBatonData().catch(console.error);
+let result = await connectBatonData();
 
-console.log("getBatonData Result: ", result);
+console.log("myResults: ", result);
 
   res.render('index', {
    
-    pageTitle: "Janna's Batons",
+    pageTitle: "Janna's Baton Databse",
     batonData: result
 
   });
@@ -80,29 +83,38 @@ app.post('/addBaton', async (req, res) => {
 
 }) 
 
-app.get('/updateBaton/:id', async (req, res) => {
-    const baton = await Collection.findOne({ _id: new ObjectId(req.params.id) });
-    res.render('edit', { baton });
+app.post('/updateBaton', async (req, res) => {
+    try {
+        console.log("body: ", req.body);
+    
+        client.connect;
+        const collection = client.db("quebec-database").collection("quebec-collection");
+        let result = await collection.findOneAndUpdate(
+          {_id: new ObjectId(req.body.id)},
+          {$set: {name: req.body.name, bookTitle: req.body.bookTitle}}
+        )
+    
+        .then(result => {
+          console.log(result);
+          res.redirect('/');
+        })
+        .catch(error => console.error(error))
+      }
+      finally {
+    
+      } 
 });
 
-app.post('/updateBaton/:id', async (req, res) => {
-    await Collection.updateOne(
-        { _id: new ObjectId(req.params.id) },
-        { $set: { Type: req.body.Type, Wrap: req.body.Wrap, Color: req.body.Color, length: parseInt(req.body.length) } }
-    );
-    res.redirect('/');
-});
-
- app.post('/deleteDrink/:id', async (req, res) => {
+ app.post('/deleteBaton', async (req, res) => {
 
   try {
-    console.log("req.parms.id: ", req.params.id) 
+    console.log("body: ", req.body); 
     
     client.connect; 
-    const collection = client.db("chillAppz").collection("drinkz");
+    const collection = client.db("quebec-database").collection("quebec-collection");
     let result = await collection.findOneAndDelete( 
       {
-        "_id": ObjectId(req.params.id)
+        "_id": ObjectId(req.body.id)
       }
     )
     .then(result => {
@@ -117,22 +129,6 @@ app.post('/updateBaton/:id', async (req, res) => {
 
 }) 
 
-
-app.get('/name', (req,res) => {
-
-  console.log("in get to slash name:", req.query.ejsFormName); 
-  myTypeServer = req.query.ejsFormName; 
-
-  res.render('index', {
-    myTypeClient: myTypeServer,
-    myResultClient: "myResultServer"
-
-  });
-
-  
-})
-
-
 app.listen(port, () => {
-console.log(`Jannas Batons (quebec) app listening on port ${port}`)
+console.log(`quebec app listening on port ${port}`)
 })
